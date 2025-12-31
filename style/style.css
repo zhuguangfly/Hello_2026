@@ -1,0 +1,389 @@
+:root {
+  --font-classic: 'Noto Serif SC', '楷体', 'STKaiti', serif;
+
+  /* === 新增：为了让编辑器不报错，给这些变量一个默认值 === */
+  --tx: 0px;
+  --ty: 0px;
+  --spray-x: 0px;
+  --spray-y: 0px;
+  --spray-rotation: 0deg;
+}
+/* =========================================
+   1. 基础设置 & 字体
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap');
+
+html {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Work Sans', sans-serif;
+  /* 定义中文字体变量，供新界面使用 */
+  --font-classic: 'Noto Serif SC', '楷体', 'STKaiti', serif;
+}
+
+/* =========================================
+   2. 原有动画容器 (旧项目核心样式)
+   ========================================= */
+.container {
+  height: 100vh;
+  width: 100vh;
+  margin: 0 auto;
+  text-align: center;
+  visibility: hidden; /* 默认隐藏，等待动画脚本触发 */
+  position: relative;
+  overflow: hidden;
+  /* 确保它定位准确，以免被新界面挤歪 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.container div.six {
+  top: 10vh;
+  z-index: 1;
+}
+
+.container div.seven,
+.container div.eight {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+}
+
+.container > div {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 20vh;
+}
+
+.one { font-size: 4.5rem; }
+.one > img { vertical-align: middle; margin-bottom: 10px; max-width: 100%; height: auto; }
+.two { font-size: 1.2rem; font-weight: lighter; }
+.three { font-size: 3rem; }
+
+.four .text-box {
+  width: 600px;
+  margin: 0 auto;
+  border: 3px solid #aaa;
+  border-radius: 5px;
+  padding: 10px;
+  position: relative;
+}
+
+.text-box p { margin: 0; text-align: left; }
+.text-box span { visibility: hidden; }
+
+.text-box .fake-btn {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  color: #fff;
+  background-color: #2ba245;
+  padding: 5px 8px;
+  border-radius: 3px;
+}
+
+.five p { font-size: 2rem; position: absolute; left: 0; right: 0; }
+.idea-3 strong { padding: 3px 5px; border-radius: 3px; display: inline-block; }
+.five .idea-5 { font-size: 4rem; }
+
+.idea-5 span,
+.idea-6 span,
+.wish-hbd span { display: inline-block; }
+
+.idea-6 span { font-size: 15rem; }
+
+.six { position: relative; }
+.six img { display: inline-block; max-width: 100%; height: auto; }
+.six .hat {
+  position: absolute;
+  width: 80px;
+  top: -70px;
+  left: 49%;
+  transform: scale(1.1);
+}
+
+.baloons img { display: inline-block; position: absolute; }
+.baloons img:nth-child(even) { left: -10%; }
+.baloons img:nth-child(odd) { right: -10%; }
+.baloons img:nth-child(3n + 0) { left: 30%; }
+
+/* 纸屑 svg 样式 */
+.eight svg {
+  width: 25px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  z-index: -1;
+}
+.eight svg:nth-child(1) { top: 7vh; left: 5vw; fill: #bd6ecf; }
+.eight svg:nth-child(2) { top: 23vh; left: 35vw; fill: #7dd175; }
+.eight svg:nth-child(3) { top: 33vh; left: 23vw; fill: #349d8b; }
+.eight svg:nth-child(4) { top: 43vh; left: 57vw; fill: #347a9d; }
+.eight svg:nth-child(5) { top: 68vh; left: 7vw; fill: #c66053; }
+.eight svg:nth-child(6) { top: 42vh; left: 77vw; fill: #bfaa40; }
+.eight svg:nth-child(7) { top: 68vh; left: 83vw; fill: #e3bae8; }
+.eight svg:nth-child(8) { top: 86vh; left: 37vw; fill: #8762cb; }
+.eight svg:nth-child(9) { top: 94vh; left: 87vw; fill: #9a90da; }
+
+.wish-hbd { font-size: 3em; margin: 0; text-transform: uppercase; }
+.wish h5 { font-weight: lighter; font-size: 2rem; margin: 10px 0 0; }
+.nine p { font-size: 2rem; font-weight: lighter; }
+#replay { z-index: 3; cursor: pointer; }
+
+/* =========================================
+   3. 音乐播放按钮 (经过修改)
+   ========================================= */
+.play-pause {
+  width: 40px; /* 稍微调小一点，更精致 */
+  height: 40px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../img/play.svg');
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  /* 固定在右上角 */
+  position: fixed;
+  right: 30px;
+  top: 30px;
+  z-index: 9999; /* 确保层级最高 */
+
+  /* 初始隐藏逻辑 */
+  opacity: 0;
+  pointer-events: none; /* 隐藏时不可点击 */
+  transition: opacity 2s ease; /* 2秒淡入效果 */
+}
+
+/* 当添加 .show 类时显示 */
+.play-pause.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 播放时的旋转动画 */
+.play-pause.playing {
+  background-image: url('../img/pause.svg');
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* =========================================
+   4. 新增：新界面特效样式 (烟花、贺卡)
+   ========================================= */
+
+/* 贺卡入场动画 */
+.card-appear {
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+  animation: card-entrance 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  will-change: transform, opacity;
+  font-family: var(--font-classic);
+}
+@keyframes card-entrance {
+  0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* 烟花粒子 */
+/*.firework {*/
+/*  position: absolute;*/
+/*  width: 6px;*/
+/*  height: 6px;*/
+/*  border-radius: 50%;*/
+/*  animation: explode 1.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;*/
+/*  transform-origin: center center;*/
+/*  will-change: transform, opacity;*/
+/*}*/
+.firework {
+  width: 8px !important;  /* 稍微大一点点 */
+  height: 8px !important;
+  transform: translate(0, 0); /* 初始在中心 */
+  /* 移除旧的 animation 定义，完全由 JS 控制 */
+}
+@keyframes explode {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50% { opacity: 1; }
+  100% { transform: scale(40) rotate(45deg); opacity: 0; }
+}
+
+/* 喷射符号 */
+.symbol {
+  position: absolute;
+  font-size: 28px;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0;
+  animation: spray-out 2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  background-image: linear-gradient(135deg, #ff4d4d, #ffb700);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #ff4d4d;
+  text-shadow: 2px 2px 8px rgba(255, 77, 77, 0.5);
+  will-change: transform, opacity;
+  font-family: var(--font-classic);
+  letter-spacing: 1px;
+}
+.symbol[data-type="emoji"] {
+  background-image: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: unset;
+  color: unset;
+  text-shadow: none;
+  font-family: inherit;
+}
+@keyframes spray-out {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) rotate(0) scale(0.8); }
+  15% { opacity: 1; transform: translate3d(calc(var(--spray-x) * 0.2), calc(var(--spray-y) * 0.2), 0) rotate(calc(var(--spray-rotation) * 0.2)) scale(1.5); }
+  70% { opacity: 1; transform: translate3d(calc(var(--spray-x) * 0.7), calc(var(--spray-y) * 0.7), 0) rotate(calc(var(--spray-rotation) * 0.7)) scale(1.2); }
+  100% { opacity: 0; transform: translate3d(var(--spray-x), var(--spray-y), 0) rotate(var(--spray-rotation)) scale(0.8); }
+}
+
+/* 背景与拖尾 */
+.bg-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 0, 0, 0.1) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+.card-wrapper {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform;
+}
+.card-wrapper > div {
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backface-visibility: hidden;
+}
+.card-wrapper:hover > div {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(255, 0, 0, 0.15);
+}
+.symbol-trail {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.3;
+  filter: blur(2px);
+  animation: trail-fade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  font-size: 24px;
+  background-image: linear-gradient(135deg, #ff4d4d, #ffb700);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #ff4d4d;
+  will-change: transform, opacity;
+  font-family: var(--font-classic);
+  letter-spacing: 1px;
+}
+.symbol-trail[data-type="emoji"] {
+  background-image: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: unset;
+  color: unset;
+  font-family: inherit;
+}
+@keyframes trail-fade {
+  0% { opacity: 0.3; transform: scale(0.9); }
+  100% { opacity: 0; transform: scale(0.6); }
+}
+.click-hint {
+  font-family: var(--font-classic);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+  background-image: linear-gradient(135deg, #ff4d4d, #ff8c00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #ff4d4d;
+  letter-spacing: 2px;
+}
+
+/* =========================================
+   5. 媒体查询 (保持原样，处理旧界面的响应式)
+   ========================================= */
+@media screen and (max-height: 1000px) { .six .hat { left: 49%; } }
+@media screen and (max-height: 800px) { .six .hat { left: 46%; } }
+@media screen and (max-height: 700px) { .six .hat { left: 44%; } }
+@media screen and (max-height: 850px) and (max-width: 450px) { .six .hat { left: 42%; } }
+@media screen and (max-width: 500px) {
+  .container { width: 90%; }
+  .four .text-box { width: 90%; }
+  .text-box .fake-btn { right: 5px; bottom: -38px; }
+  .idea-5 span { display: block; }
+  .idea-6 span { font-size: 10rem; }
+  .six .hat { width: 50px; top: -20px; }
+  .wish-hbd { font-size: 2.2em; }
+  .wish h5 { font-size: 1.4rem; }
+  .nine p { font-size: 1.5rem; font-weight: lighter; }
+}
+/* =========================================
+   9. 修复中心糊团：新的粒子飞射动画
+   ========================================= */
+
+@keyframes firework-fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    /* 粒子真正飞向四周（由 JS 传入的变量控制方向） */
+    transform: translate(var(--tx), var(--ty)) scale(0.5);
+    opacity: 0;
+  }
+}
+/*.baloons img {*/
+/*  !* 给气球加投影，产生距离感 *!*/
+/*  filter: drop-shadow(5px 10px 10px rgba(0, 0, 0, 0.2));*/
+
+/*  !* 可选：让气球稍微透一点光，更真实 *!*/
+/*  opacity: 0.95;*/
+
+/*  !* 稍微调整混合模式，让它们叠在一起时更好看 *!*/
+/*  mix-blend-mode: multiply;*/
+/*}*/
+/* =========================================
+   12. 原动画优化：文字排版
+   ========================================= */
+/* 针对所有原动画里的文字容器 */
+.one, .two, .three, .four, .five, .six, .wish-hbd, .wish h5 {
+  font-family: var(--font-classic), 'Work Sans', sans-serif !important;
+  color: #4a4a4a; /* 用深灰代替纯黑，更柔和 */
+}
+
+/* 特别优化中间那句 "Happy Birthday" */
+.wish-hbd {
+  font-weight: 900 !important; /* 加粗 */
+  letter-spacing: 2px;
+  background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent; /* 变成渐变色文字 */
+  text-shadow: none; /* 渐变文字不需要阴影 */
+  filter: drop-shadow(0 2px 5px rgba(255, 105, 180, 0.3));
+}
+
+/* 优化对话框 (Chatbox) */
+.four .text-box {
+  background: rgba(255, 255, 255, 0.8); /* 半透明白底 */
+  backdrop-filter: blur(5px); /* 毛玻璃 */
+  border: 2px solid #ff9a9e !important; /* 边框变粉色 */
+  border-radius: 15px !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
