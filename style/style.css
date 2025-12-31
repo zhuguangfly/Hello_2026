@@ -387,3 +387,22 @@ body {
   border-radius: 15px !important;
   box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
+/* =========================================
+   🚀 性能优化补丁：解决手机端 SVG 动画卡顿
+   ========================================= */
+
+/* 针对原有动画里的彩色圆圈烟花 */
+.eight svg {
+    /* 1. 告诉浏览器这个元素即将变化，请提前优化 */
+    will-change: transform, opacity;
+    
+    /* 2. 开启硬件加速 (GPU)，防止重绘 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    /* 3. 稍微限制最大宽度，防止放大后撑爆渲染层 */
+    max-width: 100vw; 
+    max-height: 100vh;
+}
