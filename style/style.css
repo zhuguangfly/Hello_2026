@@ -404,32 +404,31 @@ body {
     
     /* 3. 稍微限制最大宽度，防止放大后撑爆渲染层 */
     max-width: 100vw; 
-    max-height: /* =========================================
-   13. 自定义：Greeting 渐变方框样式
+    max-height:}
+  /* =========================================
+   13. 增强版：Greeting 渐变方框
    ========================================= */
 .greeting-box {
-  display: inline-block;
-  background: linear-gradient(135deg, #ff4d4d, #ffb700); /* 你要求的金粉渐变 */
-  color: white !important; /* 文字改为白色，确保在深色背景上清晰 */
-  padding: 5px 20px;       /* 增加左右内边距，让方框更修长 */
-  border-radius: 12px;     /* 圆角效果 */
-  box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3); /* 增加一点发光阴影 */
-  margin-right: 10px;      /* 与名字保持距离 */
-  transform: translateY(-5px); /* 稍微向上偏移，增加灵动感 */
+  display: inline-block !important; /* 强制显示为块级，否则背景无效 */
+  background: linear-gradient(135deg, #ff4d4d, #ffb700) !important; /* 强制应用渐变 */
+  padding: 8px 24px !important;    /* 稍微加大内边距 */
+  border-radius: 15px !important;  /* 明显的圆角 */
+  box-shadow: 0 8px 20px rgba(255, 77, 77, 0.4) !important; /* 增强发光感 */
+  margin-right: 15px !important;   /* 与名字 Lydia 保持距离 */
+  vertical-align: middle !important; /* 确保与名字对齐 */
 }
 
-/* 确保内部的 span 不会覆盖颜色设置 */
-.greeting-box [data-node-name="greeting"] {
+/* 强制让方框内的文字变白，防止被其他样式覆盖 */
+.greeting-box span[data-node-name="greeting"] {
   color: white !important;
-  font-weight: bold;
+  font-weight: bold !important;
+  text-shadow: none !important; /* 去除可能存在的文字阴影 */
 }
 
-/* 移动端适配：缩小方框，防止手机端文字溢出 */
+/* 移动端特殊优化：防止文字太拥挤 */
 @media screen and (max-width: 500px) {
   .greeting-box {
-    font-size: 2.5rem; /* 针对手机端调小字体 */
-    padding: 2px 12px;
+    padding: 4px 12px !important;
+    font-size: 0.6em !important; /* 手机端自动缩小比例 */
   }
-}100vh;
 }
-
